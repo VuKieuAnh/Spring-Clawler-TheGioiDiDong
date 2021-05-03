@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Mail;
 import com.example.demo.service.MailService;
-import javafx.application.Application;
+import com.example.demo.service.product.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -15,8 +15,11 @@ public class EmailDemoController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private IProductService productService;
+
     @GetMapping("/home")
-    public String home(){
+    public ModelAndView home(){
         Mail mail = new Mail();
         mail.setMailFrom("vukieuanh.hnue@gmail.com");
         mail.setMailTo("vtka.hip@gmail.com");
@@ -24,6 +27,8 @@ public class EmailDemoController {
         mail.setMailContent("Learn How to send Email using Spring Boot!!!");
 
         mailService.sendEmail(mail);
-        return "home";
+        ModelAndView modelAndView = new ModelAndView("home");
+        modelAndView.addObject("list", productService.findAll());
+        return modelAndView;
     }
 }
