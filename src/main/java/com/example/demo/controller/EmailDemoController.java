@@ -12,21 +12,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class EmailDemoController {
-    @Autowired
-    private MailService mailService;
 
     @Autowired
     private IProductService productService;
 
-    @GetMapping("/home")
+    @GetMapping("")
     public ModelAndView home(){
-        Mail mail = new Mail();
-        mail.setMailFrom("vukieuanh.hnue@gmail.com");
-        mail.setMailTo("vtka.hip@gmail.com");
-        mail.setMailSubject("Spring Boot - Email Example");
-        mail.setMailContent("Learn How to send Email using Spring Boot!!!");
 
-        mailService.sendEmail(mail);
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("list", productService.findAll());
         return modelAndView;

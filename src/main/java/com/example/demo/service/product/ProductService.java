@@ -1,7 +1,9 @@
 package com.example.demo.service.product;
 
+import com.example.demo.model.Mail;
 import com.example.demo.model.Product;
 import com.example.demo.repo.IProductRepo;
+import com.example.demo.service.MailService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -19,6 +21,9 @@ import java.util.regex.Pattern;
 public class ProductService implements IProductService {
     @Autowired
     IProductRepo productRepo;
+
+    @Autowired
+    private MailService mailService;
 
     @Override
     public Iterable<Product> findAll() {
@@ -41,7 +46,7 @@ public class ProductService implements IProductService {
 
     }
 
-    private void clawlerData(){
+    private List<Product> clawlerData(){
         String urlRoot = "https://www.thegioididong.com";
         Document doc = null;
         try {
@@ -83,8 +88,34 @@ public class ProductService implements IProductService {
             String number =  m3.group(1).trim();
             Product p = new Product(name, url, number);
             productList.add(p);
-            productRepo.save(p);
+            if(check(p)){
+                productRepo.save(p);
+                //gửi mail
+                sendEmail(p);
+
+            }
+//            productRepo.save(p);
         }
-//        return productList;
+        return productList;
+    }
+
+    public boolean check(Product product){
+        List<Product> products1 = (List<Product>) productRepo.findAll();
+        for (Product p: products1){
+            if(product.getName().equals(p.getName())){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void sendEmail(Product product){
+        Mail mail = new Mail();
+        mail.setMailFrom("vukieuanh.hnue@gmail.com");
+        mail.setMailTo("vukieuanh.hnue@gmail.com");
+        mail.setMailSubject("Email change the gioi di dong");
+        mail.setMailContent("Có 1 sản phẩm " + product.getName() + " mới được cập nhật " + product.getUrl() + " số lượng " + product.getNumber());
+
+        mailService.sendEmail(mail);
     }
 }
