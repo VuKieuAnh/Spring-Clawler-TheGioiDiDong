@@ -27,6 +27,8 @@ dependencies {
 
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'org.postgresql:postgresql'
+
+    compile group: 'com.github.messenger4j', name: 'messenger4j', version: '1.0.0'
 }
 
 test {

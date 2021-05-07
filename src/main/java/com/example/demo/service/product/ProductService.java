@@ -93,7 +93,7 @@ public class ProductService implements IProductService {
             if(check(p)){
                 productRepo.save(p);
                 //gửi mail
-                sendEmail(p);
+//                sendEmail(p);
 
             }
 //            productRepo.save(p);
