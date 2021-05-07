@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.13.1'
 
     runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'org.postgresql:postgresql'
 }
 
 test {
