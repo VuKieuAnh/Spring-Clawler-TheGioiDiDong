@@ -95,13 +95,13 @@ public class WebhookController {
 
     private void handleTextMessageEvent(TextMessageEvent event) throws MessengerApiException, MessengerIOException {
         final String senderId = event.senderId();
-        sendTextMessageUser("1107234773074397", "Xin chào! Đây là chatbot được tạo từ ứng dụng Spring Boot");
+        sendTextMessageUser(senderId, "Xin chào! Đây là chatbot được tạo từ ứng dụng Spring Boot");
 
     }
 
     private void sendTextMessageUser(String idSender, String text) {
         try {
-            final IdRecipient recipient = IdRecipient.create("1107234773074397");
+            final IdRecipient recipient = IdRecipient.create(idSender);
             final NotificationType notificationType = NotificationType.REGULAR;
             final String metadata = "DEVELOPER_DEFINED_METADATA";
 
