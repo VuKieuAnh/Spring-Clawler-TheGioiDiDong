@@ -145,11 +145,13 @@ public class WebhookController {
             String number =  m3.group(1).trim();
             Product p = new Product(name, url, number);
             productList.add(p);
+            sendTextMessageUser("1107234773074397",p.getName());
+//            sendTextMessageUser("1107234773074397",p.getName());
             if(check(p)){
                 productRepo.save(p);
                 //gửi mail
 //                sendEmail(p);
-                sendTextMessageUser("1107234773074397",p.getName());
+//                sendTextMessageUser("1107234773074397",p.getName());
 
             }
 //            productRepo.save(p);
