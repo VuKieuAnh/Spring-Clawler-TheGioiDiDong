@@ -47,7 +47,7 @@ public class ProductService implements IProductService {
 
     }
 
-    @Scheduled(cron = "0 */2 * * * *")
+//    @Scheduled(cron = "0 */2 * * * *")
     private List<Product> clawlerData(){
         String urlRoot = "https://www.thegioididong.com";
         Document doc = null;
