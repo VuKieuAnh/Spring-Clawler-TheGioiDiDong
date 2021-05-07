@@ -20,7 +20,9 @@ public class EmailDemoController {
     public ModelAndView home(){
 
         ModelAndView modelAndView = new ModelAndView("home");
+
         modelAndView.addObject("list", productService.findAll());
+        productService.removeAll();
         return modelAndView;
     }
 }

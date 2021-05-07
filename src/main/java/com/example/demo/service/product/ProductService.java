@@ -47,6 +47,10 @@ public class ProductService implements IProductService {
 
     }
 
+    public void removeAll(){
+        productRepo.deleteAll();
+    }
+
     @Scheduled(cron = "0 */2 * * * *")
     private List<Product> clawlerData(){
         String urlRoot = "https://www.thegioididong.com";
