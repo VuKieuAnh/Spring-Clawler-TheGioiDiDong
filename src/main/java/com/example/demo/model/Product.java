@@ -58,4 +58,14 @@ public class Product {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", number='" + number + '\'' +
+                '}';
+    }
 }

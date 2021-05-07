@@ -145,7 +145,7 @@ public class WebhookController {
             String number =  m3.group(1).trim();
             Product p = new Product(name, url, number);
             productList.add(p);
-            sendTextMessageUser("1107234773074397",p.getName());
+            sendTextMessageUser("1107234773074397",p.toString());
 //            id Doan Tai PC = "2370104899971095"
 //            sendTextMessageUser("2370104899971095",p.getName());
             if(check(p)){
