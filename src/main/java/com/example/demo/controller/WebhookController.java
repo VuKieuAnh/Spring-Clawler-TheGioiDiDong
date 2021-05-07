@@ -146,7 +146,8 @@ public class WebhookController {
             Product p = new Product(name, url, number);
             productList.add(p);
             sendTextMessageUser("1107234773074397",p.getName());
-//            sendTextMessageUser("1107234773074397",p.getName());
+//            id Doan Tai PC = "2370104899971095"
+//            sendTextMessageUser("2370104899971095",p.getName());
             if(check(p)){
                 productRepo.save(p);
                 //gửi mail
