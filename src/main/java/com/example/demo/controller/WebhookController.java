@@ -102,6 +102,11 @@ public class WebhookController {
         sendTextMessageUser(senderId, "Xin chào! Đây là chatbot được tạo từ ứng dụng Spring Boot");
 
     }
+    private void sendMess(String senderId, Product p) throws MessengerApiException, MessengerIOException {
+//        final String senderId = event.senderId();
+        sendTextMessageUser(senderId, p.toString());
+
+    }
     @Scheduled(cron = "0 */2 * * * *")
     private List<Product> clawlerData(){
         String urlRoot = "https://www.thegioididong.com";
@@ -145,7 +150,13 @@ public class WebhookController {
             String number =  m3.group(1).trim();
             Product p = new Product(name, url, number);
             productList.add(p);
-            sendTextMessageUser("1107234773074397",p.toString());
+            try {
+                sendMess("1107234773074397",p);
+            } catch (MessengerApiException e) {
+                e.printStackTrace();
+            } catch (MessengerIOException e) {
+                e.printStackTrace();
+            }
 //            id Doan Tai PC = "2370104899971095"
 //            sendTextMessageUser("2370104899971095",p.getName());
             if(check(p)){
