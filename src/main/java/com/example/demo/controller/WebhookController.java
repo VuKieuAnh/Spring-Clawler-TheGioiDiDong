@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Product;
+import com.example.demo.model.User;
 import com.example.demo.repo.IProductRepo;
 import com.example.demo.service.MailService;
+import com.example.demo.service.user.IUserService;
 import com.github.messenger4j.Messenger;
 import com.github.messenger4j.exception.MessengerApiException;
 import com.github.messenger4j.exception.MessengerIOException;
@@ -52,6 +54,9 @@ public class WebhookController {
     @Autowired
     IProductRepo productRepo;
 
+    @Autowired
+    IUserService userService;
+
     private static final Logger logger = LoggerFactory.getLogger(WebhookController.class);
 
     private final Messenger messenger;
@@ -99,65 +104,78 @@ public class WebhookController {
 
     private void handleTextMessageEvent(TextMessageEvent event) throws MessengerApiException, MessengerIOException {
         final String senderId = event.senderId();
-        sendTextMessageUser(senderId, "Xin chào! Đây là chatbot được tạo từ ứng dụng Spring Boot");
+        Long id = Long.parseLong(senderId);
+        Optional<User> userOptional = userService.findById(id);
+        if(userOptional.isPresent()){
+            sendTextMessageUser(senderId, "Xin chào! Đây là ung dung gui thong tin");
+        }else {
+            User user = new User();
+            user.setId(id);
+            userService.save(user);
+        }
 
     }
     @Scheduled(cron = "0 */2 * * * *")
-    private List<Product> clawlerData(){
-        String urlRoot = "https://www.thegioididong.com";
-        Document doc = null;
-        try {
-            doc = Jsoup.connect("https://www.thegioididong.com/may-doi-tra/laptop-dell?o=gia-thap-den-cao").data("query", "Java").userAgent("Chrome").cookie("auth", "token").timeout(5000).post();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Elements elements = doc.getElementById("lstModel").children();
-        String a = elements.toString();
-        a = a.replaceAll("\\R", "");
-        List<Product> productList = new ArrayList<>();
+    private void clawlerData(){
+        List<User> users = (List<User>) userService.findAll();
+        if(!users.isEmpty()){
+            String urlRoot = "https://www.thegioididong.com";
+            Document doc = null;
+            try {
+                doc = Jsoup.connect("https://www.thegioididong.com/may-doi-tra/laptop-dell?o=gia-thap-den-cao").data("query", "Java").userAgent("Chrome").cookie("auth", "token").timeout(5000).post();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Elements elements = doc.getElementById("lstModel").children();
+            String a = elements.toString();
+            a = a.replaceAll("\\R", "");
+            List<Product> productList = new ArrayList<>();
 //        System.out.println(a);
-        // Regex tên sp
-        Pattern p1 = Pattern.compile("<h3>(.*?)</h3>");
+            // Regex tên sp
+            Pattern p1 = Pattern.compile("<h3>(.*?)</h3>");
 //        Pattern p1 = Pattern.compile("<div class=\"fname\">(.*?)</div>");
-        Matcher m1 = p1.matcher(a);
+            Matcher m1 = p1.matcher(a);
 //        System.out.println("ten sp");
 //        int count = 0;
 //        while (m1.find()) {
 ////            count++;
 //            System.out.println(m1.group(1).trim());
 //        }
-        // link sp
-        Pattern p2 = Pattern.compile("href=\"(.*?)\"");
+            // link sp
+            Pattern p2 = Pattern.compile("href=\"(.*?)\"");
 //        Pattern p1 = Pattern.compile("<div class=\"fname\">(.*?)</div>");
-        Matcher m2 = p2.matcher(a);
+            Matcher m2 = p2.matcher(a);
 //        System.out.println("link sp");
 //        while (m2.find()) {
 //            System.out.println(urlRoot+m2.group(1).trim());
 //        }
-        // số lương  sp
-        Pattern p3 = Pattern.compile("<span class=\"quantity\">(.*?)</span>");
+            // số lương  sp
+            Pattern p3 = Pattern.compile("<span class=\"quantity\">(.*?)</span>");
 //        Pattern p1 = Pattern.compile("<div class=\"fname\">(.*?)</div>");
-        Matcher m3 = p3.matcher(a);
+            Matcher m3 = p3.matcher(a);
 //        System.out.println("số lượng sp");
-        while (m1.find()&& m2.find()&& m3.find()) {
-            String name = m1.group(1).trim();
-            String url = urlRoot + m2.group(1).trim();
-            String number =  m3.group(1).trim();
-            Product p = new Product(name, url, number);
-            productList.add(p);
-            sendTextMessageUser("1107234773074397",p.getName());
+            while (m1.find()&& m2.find()&& m3.find()) {
+                String name = m1.group(1).trim();
+                String url = urlRoot + m2.group(1).trim();
+                String number =  m3.group(1).trim();
+                Product p = new Product(name, url, number);
+                productList.add(p);
+                for (User user: users){
+                    sendTextMessageUser(user.getId().toString(), p.getName());
+                }
 //            id Doan Tai PC = "2370104899971095"
 //            sendTextMessageUser("2370104899971095",p.getName());
-            if(check(p)){
-                productRepo.save(p);
-                //gửi mail
+                if(check(p)){
+                    productRepo.save(p);
+
+                    //gửi mail
 //                sendEmail(p);
 //                sendTextMessageUser("1107234773074397",p.getName());
 
-            }
+                }
 //            productRepo.save(p);
+            }
         }
-        return productList;
     }
 
     public boolean check(Product product){
