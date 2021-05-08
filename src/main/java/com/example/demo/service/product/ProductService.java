@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -91,9 +92,12 @@ public class ProductService implements IProductService {
             Product p = new Product(name, url, number);
             productList.add(p);
             if(check(p)){
+                long millis = System.currentTimeMillis();
+                Date date = new Date(millis);
+                p.setDate(date);
                 productRepo.save(p);
                 //gửi mail
-//                sendEmail(p);
+                sendEmail(p);
 
             }
 //            productRepo.save(p);
@@ -114,7 +118,8 @@ public class ProductService implements IProductService {
     public void sendEmail(Product product){
         Mail mail = new Mail();
         mail.setMailFrom("vukieuanh.hnue@gmail.com");
-        mail.setMailTo("vukieuanh.hnue@gmail.com");
+        mail.setMailTo("phucit.mediahn@gmail.com");
+//        mail.setMailCc("vukieuanh.hnue@gmail.com");
         mail.setMailSubject("Email change the gioi di dong");
         mail.setMailContent("Có 1 sản phẩm " + product.getName() + " mới được cập nhật " + product.getUrl() + " số lượng " + product.getNumber());
 

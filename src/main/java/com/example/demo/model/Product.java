@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Product {
@@ -19,6 +20,16 @@ public class Product {
     private String number;
 
     public Product() {
+    }
+
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Product(String name, String url, String number) {
@@ -57,5 +68,11 @@ public class Product {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String toString(String rootUrl) {
+        return "SP moi dc cap nhat "+
+                name +" co duong dan "+ rootUrl +
+                url + " "  + " so luong " + number;
     }
 }

@@ -118,8 +118,8 @@ public class WebhookController {
     @Scheduled(cron = "0 */2 * * * *")
     private void clawlerData(){
         List<User> users = (List<User>) userService.findAll();
+        String urlRoot = "https://www.thegioididong.com";
         if(!users.isEmpty()){
-            String urlRoot = "https://www.thegioididong.com";
             Document doc = null;
             try {
                 doc = Jsoup.connect("https://www.thegioididong.com/may-doi-tra/laptop-dell?o=gia-thap-den-cao").data("query", "Java").userAgent("Chrome").cookie("auth", "token").timeout(5000).post();
@@ -166,7 +166,7 @@ public class WebhookController {
                 if(check(p)){
                     productRepo.save(p);
                     for (User user: users){
-                        sendTextMessageUser(user.getId().toString(), p.getName());
+                        sendTextMessageUser(user.getId().toString(), p.toString(urlRoot));
                     }
 
                     //gửi mail
