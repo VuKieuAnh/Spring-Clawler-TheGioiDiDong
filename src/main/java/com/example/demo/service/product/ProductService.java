@@ -48,7 +48,7 @@ public class ProductService implements IProductService {
 
     }
 
-//    @Scheduled(cron = "0 */2 * * * *")
+//    @Scheduled(cron = "0 */1 * * * *")
     private List<Product> clawlerData(){
         String urlRoot = "https://www.thegioididong.com";
         Document doc = null;
@@ -118,7 +118,8 @@ public class ProductService implements IProductService {
     public void sendEmail(Product product){
         Mail mail = new Mail();
         mail.setMailFrom("vukieuanh.hnue@gmail.com");
-        mail.setMailTo("phucit.mediahn@gmail.com");
+//        mail.setMailTo("phucit.mediahn@gmail.com");
+        mail.setMailTo("vukieuanh.hnue@gmail.com");
 //        mail.setMailCc("vukieuanh.hnue@gmail.com");
         mail.setMailSubject("Email change the gioi di dong");
         mail.setMailContent("Có 1 sản phẩm " + product.getName() + " mới được cập nhật " + product.getUrl() + " số lượng " + product.getNumber());
