@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class ProductService implements IProductService {
+    private List<Product> products;
+//    private static List<Product> products1 = productRepo.findAll();
     @Autowired
     IProductRepo productRepo;
 
@@ -29,7 +31,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Iterable<Product> findAll() {
-        clawlerData();
+//        clawlerData();
         return productRepo.findAll();
     }
 
@@ -48,8 +50,9 @@ public class ProductService implements IProductService {
 
     }
 
-//    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     private List<Product> clawlerData(){
+        products = new ArrayList<>();
         String urlRoot = "https://www.thegioididong.com";
         Document doc = null;
         try {
@@ -60,7 +63,7 @@ public class ProductService implements IProductService {
         Elements elements = doc.getElementById("lstModel").children();
         String a = elements.toString();
         a = a.replaceAll("\\R", "");
-        List<Product> productList = new ArrayList<>();
+//        List<Product> productList = new ArrayList<>();
 //        System.out.println(a);
         // Regex tên sp
         Pattern p1 = Pattern.compile("<h3>(.*?)</h3>");
@@ -90,7 +93,7 @@ public class ProductService implements IProductService {
             String url = urlRoot + m2.group(1).trim();
             String number =  m3.group(1).trim();
             Product p = new Product(name, url, number);
-            productList.add(p);
+            products.add(p);
             if(check(p)){
                 long millis = System.currentTimeMillis();
                 Date date = new Date(millis);
@@ -102,7 +105,20 @@ public class ProductService implements IProductService {
             }
 //            productRepo.save(p);
         }
-        return productList;
+        List<Product> productsInDB = (List<Product>) productRepo.findAll();
+        for (Product p:productsInDB
+             ) {
+            boolean check = false;
+            for (Product pInListClawler: products
+                 ) {
+                if (p.getName().equals(pInListClawler.getName())) check = true;
+            }
+            if (!check){
+                productRepo.delete(p);
+            }
+        }
+
+        return products;
     }
 
     public boolean check(Product product){
@@ -118,8 +134,8 @@ public class ProductService implements IProductService {
     public void sendEmail(Product product){
         Mail mail = new Mail();
         mail.setMailFrom("vukieuanh.hnue@gmail.com");
-//        mail.setMailTo("phucit.mediahn@gmail.com");
-        mail.setMailTo("vukieuanh.hnue@gmail.com");
+        mail.setMailTo("phucit.mediahn@gmail.com");
+//        mail.setMailTo("vukieuanh.hnue@gmail.com");
 //        mail.setMailCc("vukieuanh.hnue@gmail.com");
         mail.setMailSubject("Email change the gioi di dong");
         mail.setMailContent("Có 1 sản phẩm " + product.getName() + " mới được cập nhật " + product.getUrl() + " số lượng " + product.getNumber());

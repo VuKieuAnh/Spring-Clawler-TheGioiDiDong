@@ -115,7 +115,7 @@ public class WebhookController {
         }
 
     }
-    @Scheduled(cron = "0 */1 * * * *")
+//    @Scheduled(cron = "0 */1 * * * *")
     private void clawlerData(){
         List<User> users = (List<User>) userService.findAll();
         String urlRoot = "https://www.thegioididong.com";
